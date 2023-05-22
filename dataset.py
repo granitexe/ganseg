@@ -157,6 +157,9 @@ class DatasetFolder(data.Dataset):
 
             # print(len(p.augmentor_images), len(p.augmentor_images[0]), p.augmentor_images[0][0].shape, p.augmentor_images[0][0].dtype)
             augmented_images, labels = p.sample(1)
+            # Convert the images to numpy arrays
+            augmented_images = [np.array(image) for image in augmented_images]
+
             sample_aug = augmented_images[0][0]
             target_aug = augmented_images[0][1]
 

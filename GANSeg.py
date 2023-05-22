@@ -252,7 +252,7 @@ class GANSeg(object) :
         num_testB = len(self.testB_loader)
 
         print("num_trainA=", num_trainA, "num_trainB=", num_trainB, "num_testA=", num_testA, "num_testB=", num_testB)
-        best_U_loss_valid = np.float("inf")
+        best_U_loss_valid = float("inf")
 
         valid_file = os.path.join(self.result_dir, self.dataset, 'valid_logs.csv')
         with open(valid_file, 'w') as fout:

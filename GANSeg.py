@@ -274,7 +274,7 @@ class GANSeg(object) :
                 if not self.no_gan:
                     self.D_optim.param_groups[0]['lr'] -= (self.lr / (self.iteration // 2))
 
-             try:
+            try:
                 real_A, real_seg_A = trainA_iter.next()
             except:
                 trainA_iter = iter(self.trainA_loader)

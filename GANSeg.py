@@ -183,7 +183,7 @@ class GANSeg(object) :
         if self.seg_loss=='NLL':
             if self.class_weight_file:
                 class_weight_path = os.path.join('dataset', self.dataset, self.class_weight_file)
-                class_weights_seg = np.loadtxt(class_weight_path).astype(np.float32)
+                class_weights_seg = np.loadtxt(class_weight_path).astype(float)
                 class_weights_seg = torch.from_numpy(class_weights_seg).to(self.device)
                 self.NLL_loss = nn.NLLLoss(weight=class_weights_seg).to(self.device)
             else:
@@ -197,7 +197,7 @@ class GANSeg(object) :
         elif self.seg_loss == 'normFocalWeighted':
             from focalLoss import NormalizedFocalLossWeighted
             class_weight_path = os.path.join('dataset', self.dataset, self.class_weight_file)
-            class_weights_seg = np.loadtxt(class_weight_path).astype(np.float32)
+            class_weights_seg = np.loadtxt(class_weight_path).astype(float)
             class_weights_seg = torch.from_numpy(class_weights_seg).to(self.device)
             self.NLL_loss = NormalizedFocalLossWeighted(gamma=0.5, alpha=None, num_classes=self.seg_classes, weights=class_weights_seg).to(self.device)
 

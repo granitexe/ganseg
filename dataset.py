@@ -227,12 +227,11 @@ def cv2_loader(path, num_ch):
         img = cv2.imread(path)
     return img
 
-
 def default_loader(path, seg_factor=30, num_ch=3):
     if 'seg' in path:
         temp = cv2_loader(path, num_ch=1)
-        temp = temp/seg_factor
-        return temp.astype(np.uint8)
+        temp = temp / seg_factor
+        return np.array(temp, dtype=np.uint8)
     else:
         return cv2_loader(path, num_ch=num_ch)
 

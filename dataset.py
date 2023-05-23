@@ -111,6 +111,7 @@ class DatasetFolder(data.Dataset):
         self.transform = transform
 
     def __getitem__(self, index, visualise=False):
+        import numpy as np
         """
         Args:
             index (int): Index

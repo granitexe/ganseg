@@ -154,6 +154,11 @@ class DatasetFolder(data.Dataset):
                 else:
                     getattr(p, key)(**key_dict)
             p.crop_by_size(probability=1, width=self.col_size, height=self.img_size)
+            
+            if len(p.augmentor_images) > 0:
+                print("Type of first image in p.augmentor_images:", type(p.augmentor_images[0]))
+                print("Shape of first image in p.augmentor_images:", p.augmentor_images[0].shape)
+
 
             # print(len(p.augmentor_images), len(p.augmentor_images[0]), p.augmentor_images[0][0].shape, p.augmentor_images[0][0].dtype)
             augmented_images, labels = p.sample(1)

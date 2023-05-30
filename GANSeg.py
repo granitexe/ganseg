@@ -536,13 +536,13 @@ class GANSeg(object) :
         U_loss_A = 0
         for _ in range(num_samples):
             try:
-                real_A, real_seg_A = A_iter.next()
+                real_A, real_seg_A = next(A_iter)
             except:
                 if is_train:
                     A_iter = iter(self.trainA_loader)
                 else:
                     A_iter = iter(self.testA_loader)
-                real_A, real_seg_A = A_iter.next()
+                real_A, real_seg_A = next(A_iter)
 
             real_A = real_A.to(self.device, dtype=torch.float)
             real_seg_A = real_seg_A.to(self.device, dtype=torch.long)

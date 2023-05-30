@@ -183,7 +183,7 @@ class GANSeg(object) :
         if self.seg_loss=='NLL':
             if self.class_weight_file:
                 class_weight_path = os.path.join('dataset', self.dataset, self.class_weight_file)
-                class_weights_seg = np.loadtxt(class_weight_path).astype(float)
+                class_weights_seg = np.loadtxt(class_weight_path).astype(np.float32)
                 class_weights_seg = torch.from_numpy(class_weights_seg).to(self.device)
                 self.NLL_loss = nn.NLLLoss(weight=class_weights_seg).to(self.device)
             else:
@@ -197,7 +197,7 @@ class GANSeg(object) :
         elif self.seg_loss == 'normFocalWeighted':
             from focalLoss import NormalizedFocalLossWeighted
             class_weight_path = os.path.join('dataset', self.dataset, self.class_weight_file)
-            class_weights_seg = np.loadtxt(class_weight_path).astype(float)
+            class_weights_seg = np.loadtxt(class_weight_path).astype(np.float32)
             class_weights_seg = torch.from_numpy(class_weights_seg).to(self.device)
             self.NLL_loss = NormalizedFocalLossWeighted(gamma=0.5, alpha=None, num_classes=self.seg_classes, weights=class_weights_seg).to(self.device)
 
@@ -252,7 +252,7 @@ class GANSeg(object) :
         num_testB = len(self.testB_loader)
 
         print("num_trainA=", num_trainA, "num_trainB=", num_trainB, "num_testA=", num_testA, "num_testB=", num_testB)
-        best_U_loss_valid = float("inf")
+        best_U_loss_valid = np.float("inf")
 
         valid_file = os.path.join(self.result_dir, self.dataset, 'valid_logs.csv')
         with open(valid_file, 'w') as fout:
@@ -268,9 +268,6 @@ class GANSeg(object) :
                        "U_loss_A, U_loss_A2B\n")
         fout.close()
 
-        trainA_iter = iter(self.trainA_loader)
-        trainB_iter = iter(self.trainB_loader)
-        
         for step in range(start_iter, self.iteration + 1):
             if self.decay_flag and step > (self.iteration // 2):
                 self.G_optim.param_groups[0]['lr'] -= (self.lr / (self.iteration // 2))
@@ -278,16 +275,16 @@ class GANSeg(object) :
                     self.D_optim.param_groups[0]['lr'] -= (self.lr / (self.iteration // 2))
 
             try:
-                real_A, real_seg_A = next(trainA_iter)
+                real_A, real_seg_A = trainA_iter.next()
             except:
                 trainA_iter = iter(self.trainA_loader)
-                real_A, real_seg_A = next(trainA_iter)
+                real_A, real_seg_A = trainA_iter.next()
 
             try:
-                real_B, _ = next(trainB_iter)
+                real_B, _ = trainB_iter.next()
             except:
                 trainB_iter = iter(self.trainB_loader)
-                real_B, _ = next(trainB_iter)
+                real_B, _ = trainB_iter.next()
 
             real_A, real_B = real_A.to(self.device, dtype=torch.float), real_B.to(self.device, dtype=torch.float)
             real_seg_A = real_seg_A.to(self.device, dtype=torch.long)

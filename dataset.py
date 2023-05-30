@@ -111,8 +111,6 @@ class DatasetFolder(data.Dataset):
         self.transform = transform
 
     def __getitem__(self, index, visualise=False):
-        # Remove later
-        import numpy as np
         """
         Args:
             index (int): Index
@@ -156,20 +154,9 @@ class DatasetFolder(data.Dataset):
                 else:
                     getattr(p, key)(**key_dict)
             p.crop_by_size(probability=1, width=self.col_size, height=self.img_size)
-            
-            if len(p.augmentor_images) > 0 and len(p.augmentor_images[0]) > 0:
-                print("Type of first image in p.augmentor_images:", type(p.augmentor_images[0][0]))
-                print("Shape of first image in p.augmentor_images:", np.array(p.augmentor_images[0][0]).shape)
-                print("Type of first mask in p.augmentor_images:", type(p.augmentor_images[0][1]))
-                print("Shape of first mask in p.augmentor_images:", np.array(p.augmentor_images[0][1]).shape)
-
-
 
             # print(len(p.augmentor_images), len(p.augmentor_images[0]), p.augmentor_images[0][0].shape, p.augmentor_images[0][0].dtype)
             augmented_images, labels = p.sample(1)
-            # Convert the images to numpy arrays
-            augmented_images = [np.array(image) for image in augmented_images]
-
             sample_aug = augmented_images[0][0]
             target_aug = augmented_images[0][1]
 
@@ -237,11 +224,12 @@ def cv2_loader(path, num_ch):
         img = cv2.imread(path)
     return img
 
+
 def default_loader(path, seg_factor=30, num_ch=3):
     if 'seg' in path:
         temp = cv2_loader(path, num_ch=1)
-        temp = temp / seg_factor
-        return np.array(temp, dtype=np.uint8)
+        temp = temp/seg_factor
+        return temp.astype(np.uint8)
     else:
         return cv2_loader(path, num_ch=num_ch)
 
